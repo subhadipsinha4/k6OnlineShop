@@ -1,0 +1,40 @@
+/// <reference types="Cypress" />
+
+describe("Select single product and placed the successful order", function(){
+
+it("Select single product and placed the successful order",function(){
+
+    cy.visit("http://ecommerce.test.k6.io/")
+    cy.get("#woocommerce-product-search-field-0").type("Cap{enter}")
+    cy.get(".product_title").should('have.text', 'Cap')
+    cy.get(".single_add_to_cart_button").click()
+    cy.contains(".woocommerce-message", "has been added to your cart")
+    cy.get(".cart-contents").invoke('show').click()
+    cy.scrollTo(0, 500)
+    cy.get(".checkout-button").click()
+    cy.get(".entry-title").should("have.text","Checkout")
+    cy.get(".woocommerce-billing-fields > h3").should("have.text","Billing details")
+    cy.contains("label[for='billing_first_name']","First name")
+    cy.get("#billing_first_name").type("Jack")
+    cy.contains("label[for='billing_last_name']","Last name")
+    cy.get("#billing_last_name").type("Maa")
+    cy.get('#billing_country_field>label').contains("Region")
+    cy.get("#select2-billing_country-container").click()
+    cy.get("#select2-billing_country-results").contains('Japan').click()
+    cy.get("#billing_postcode").type("100-0000")
+    cy.get("#select2-billing_state-container").click()
+    cy.get("#select2-billing_state-results").contains('Tokyo').click()
+    cy.get("#billing_city").type("Tokyo")
+    cy.get("#billing_address_1_field").type("abc test")
+    cy.get("#billing_phone").type("9876543210")
+    cy.get("#billing_email").type("test@gmail.com")
+    cy.get("#place_order").click()
+    cy.wait(5000)
+    cy.get(".woocommerce-breadcrumb").contains("Order received")
+    cy.get(".entry-title").should("have.text","Order received")
+    cy.get(".woocommerce-thankyou-order-received").should("have.text","Thank you. Your order has been received.")
+    cy.get(".woocommerce-order-overview__order order > strong").should("not.be.empty")
+    cy.get("strong > .woocommerce-Price-amount > bdi").should("contain","16")
+})
+
+})
